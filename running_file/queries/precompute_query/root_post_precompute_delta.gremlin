@@ -1,0 +1,8 @@
+g.V().hasLabel('Comment').has('creationDate',between($startDate,$endDate))
+.not(outE('rootPost')).as('comment')
+.repeat(__.out('replyOf')).until(__.hasLabel('Post'))
+.project('commentCreationDate','commentId','postId')
+.by(select('comment').id())
+.by(select('comment').values('creationDate'))
+.by(id())
+.io('$dataDir/Comment_rootPost_Post_$taskIndex.csv').write().with(__.map{it.get().get('commentCreationDate')+"|"+it.get().get('commentId')+"|"+it.get().get('postId')})
