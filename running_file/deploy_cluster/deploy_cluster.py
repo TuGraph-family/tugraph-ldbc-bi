@@ -81,52 +81,45 @@ def wait_deploy_success(num):
         wait_process(i)
         res = execute_command_result('./kubectl  --kubeconfig kube.yaml -n geaflow get po')
 
-def get_ingress_ip():
-    ingress = execute_command_result('./kubectl  --kubeconfig kube.yaml -n geaflow get ingress')
-    while(ingress.count('\n')) != 3:
-        time.sleep(1)
-    ip = ingress.split('\n')[1].split()[3]
-    while (ip == "80"): 
-        time.sleep(1)
-        ingress = execute_command_result('./kubectl  --kubeconfig kube.yaml -n geaflow get ingress')
-        ip = ingress.split('\n')[1].split()[3]
-    return ip
+def get_ingress_host():
+    ingress = execute_command_result("./kubectl --kubeconfig kube.yaml -n geaflow get pod raycluster-sample-default-head-0 -o jsonpath='{.status.podIP}'")
+    return ingress + ":8090"
 
-
-def _register_content(revision, cpu, mem, size):
+def _register_content(host, revision, cpu, mem, size):
     content = {}
     content['revision'] = revision
     content['name'] = 'geaflow'
     content['namespaceId'] = 'geaflow'
     content['enableSubNamespaceIsolation'] = True
+    content['scheduleOptions'] = {"runtimeResourceSchedulingEnabled": False}
     nodeList = [{'group':'2c8g', 'nodeCount': 1}]
     worker_group = "{}c{}g".format(cpu, mem)
     nodeList.append({'group': worker_group, 'nodeCount': size})
     content['nodeShapeAndCountList'] = nodeList
-    res = requests.post("http://raycluster-sample.ray.tugraph.com/namespaces_v3", json.dumps(content), timeout=100)
+    res = requests.post("http://" + host + "/namespaces_v3", json.dumps(content), timeout=100)
     return json.loads(res.text)
 
 
-def register_content(worker_info):
+def register_content(host, worker_info):
     cpu = worker_info['cpu']
     mem = worker_info['memory']
     size = worker_info['number']
     res = _register_content(0, cpu, mem, size)
     if res['result'] == False:
         revision = res['data']['revision']
-        _register_content(revision, cpu, mem, size)
+        _register_content(host, revision, cpu, mem, size)
 
-def _check_deploy_ok():
+def _check_deploy_ok(host):
     code = 0
     while code != 200:
         time.sleep(5)
-        res = requests.get("http://raycluster-sample.ray.tugraph.com/namespaces?show_node_spec=1")
+        res = requests.get("http://" + host + "/namespaces?show_node_spec=1")
         code = res.status_code
     return json.loads(res.text)
 
 
-def check_deploy_ok(size):
-    res = _check_deploy_ok()
+def check_deploy_ok(host, size):
+    res = _check_deploy_ok(host)
     while res['result'] == False:
         print('error ' + res)
 
@@ -166,9 +159,7 @@ if __name__ == '__main__':
     time.sleep(5)
     execute_command_slient('./kubectl  --kubeconfig kube.yaml -n geaflow delete svc raycluster-sample-default-head')
     execute_command_slient('./kubectl  --kubeconfig kube.yaml -n geaflow create -f ./ingress', 5)
-    ingress_ip = get_ingress_ip()
-    execute_command_slient('echo {} raycluster-sample.ray.tugraph.com >> /etc/hosts'.format(ingress_ip))
-    time.sleep(5)
-    check_deploy_ok(worker_info["number"] + 1)
-    register_content(worker_info)
+    ingress_host = get_ingress_host()
+    check_deploy_ok(ingress_host, worker_info["number"] + 1)
+    register_content(ingress_host, worker_info)
     print("\ndeploy success")

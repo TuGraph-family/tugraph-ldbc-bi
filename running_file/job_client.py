@@ -6,6 +6,7 @@ import time
 import os
 import sys
 import socket
+import math
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -32,8 +33,8 @@ jarList = [
     {
         "name": "rayag",
         "version": "0.9",
-        "url": oss_url + "/gryphon-ldbc-0.9.jar",
-        "md5": "5e295db97d966efa6d9f9bdf298fc64f"
+        "url": oss_url + "/" + os.getenv('JAR'),
+        "md5": os.getenv('JAR_MD5')
     }
 ]
 
@@ -54,7 +55,7 @@ class GeaflowClient:
                 node_mem = node['mem']['total']
         res = requests.get(self.endpoint+ '/nodes/' + node_id)
         mem = json.loads(res.text)['data']['detail']['raylet']['resourcesTotal']['memory']
-        return max(int(mem/MB) - 6 * 1024, int(node_mem/MB))
+        return max(int(mem/MB) - 5 * 1024, int(node_mem/MB))
 
 
     def submitJob(self, mainClass, jobPackageUrl, jarList):
@@ -86,14 +87,14 @@ class GeaflowClient:
         jobParams["jvm_Options"] = ["-Dray.task.return_task_exception=false"]
 
         jobParams["name"] = name
-
+        maximum_worker_processes = int(self.worker_info['memory'] / worker_jvm_gb / 1.5)
         clusterArgs = {
             "containerMemory": self.get_worker_memory_mb(),
-            "num_workers_per_process_java": int(partition /  self.worker_info['number']),
+            "num_workers_per_process_java": math.ceil(partition /  self.worker_info['number'] / maximum_worker_processes),
             "driver_jvm_args": "-Xmx6g,-Xms6g,-Xmn2g",
             "containerVcores": int(self.worker_info['cpu']),
             "workNodeNumber": int(self.worker_info['number'] + 1),
-            "maximum_worker_processes": int(self.worker_info['memory'] / worker_jvm_gb / 1.5),
+            "maximum_worker_processes": maximum_worker_processes,
             "jvm_args": "-Xmx{}g,-Xms{}g,-XX:MaxDirectMemorySize={}g,-Dray.job.logging-level=WARN,-XX:MaxGCPauseMillis=1000".format(worker_jvm_gb, worker_jvm_gb, int(worker_jvm_gb / 2))
         }
         numJavaWorkersPerProcess = clusterArgs["num_workers_per_process_java"]
