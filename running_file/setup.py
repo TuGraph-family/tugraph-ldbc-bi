@@ -14,7 +14,7 @@ print("Schema setup")
 print("-------------------------------------------------------------------------------")
 t0 = time.time()
 query = read_query(f"{queries_dir}/ddl/schema.ddl")
-#run_query(query, {})
+run_query(query, {})
 
 
 print("===============================================================================")
@@ -26,7 +26,7 @@ parameters = {"dataDir": f"{data_path}"}
 run_query(query, parameters)
 
 print("===============================================================================")
-print("Precompute ROOT_POST")
+print("Precompute rootPost")
 print("-------------------------------------------------------------------------------")
 t2 = time.time()
 parameters = {"dataDir": f"{work_path}"}
@@ -34,7 +34,7 @@ query = read_query(f"{queries_dir}/precompute_query/root_post_precompute_all.gre
 run_query(query, parameters)
 
 print("===============================================================================")
-print("Load ROOT_POST")
+print("Load rootPost")
 print("-------------------------------------------------------------------------------")
 t3 = time.time()
 query = read_query(f"{queries_dir}/dml/load_precompute_root_post.gremlin")
@@ -47,8 +47,8 @@ print("=========================================================================
 print("TuGraph data is ready for benchmark")
 print(f"Schema setup:        {round(t1-t0,2)} s")
 print(f"Load Data:           {round(t2-t1,2)} s")
-print(f"Precompute ROOT_POST:{round(t3-t2,2)} s")
-print(f"Load ROOT_POST:      {round(t4-t3,2)} s")
+print(f"Precompute rootPost: {round(t3-t2,2)} s")
+print(f"Load rootPost:       {round(t4-t3,2)} s")
 print("-------------------------------------------------------------------------------")
 print("\n")
 

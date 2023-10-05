@@ -55,7 +55,7 @@ def run_query(query, query_num, parameters):
     # convert results from str to [dict]
     response = json.loads(result_str)
     if 'ERROR' in response:
-        raise Exception(f"Error happen in query:{query_num}, will stop!")
+        raise Exception(f"Error happen in query:\n\n{query_num}\n\nStop now, please check!")
     if query_num is None or query_num == -1:
         return f"""[{{"query": {query}}}]""", duration
     elif query_num == 11 and len(response['node']) == 0:

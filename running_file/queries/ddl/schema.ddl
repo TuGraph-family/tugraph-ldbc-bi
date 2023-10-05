@@ -180,6 +180,4 @@ create graph view ldbc_bi_graph (
     weight INTEGER,
     edge prop(srcId, tarId, weight, 'weight20', 'BOTH', 'DISTRIBUTE')
   )
-) with (
-    gremlin.traversal.parallelism = '1199'
-);
+)

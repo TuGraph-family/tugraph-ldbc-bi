@@ -9,16 +9,6 @@ from common.util import read_query
 from driver import driver
 
 VERTICES = ['Comment', 'Forum', 'Person', 'Post']
-EDGES = ['Comment_hasCreator_Person', 'Comment_hasTag_Tag', 'Comment_isLocatedIn_Country',
-         'Comment_replyOf_Comment', 'Comment_replyOf_Post', 'Forum_containerOf_Post',
-         'Forum_hasMember_Person', 'Forum_hasModerator_Person', 'Forum_hasTag_Tag',
-         'Person_hasInterest_Tag', 'Person_isLocatedIn_City', 'Person_knows_Person',
-         'Person_likes_Comment', 'Person_likes_Post', 'Person_studyAt_University',
-         'Person_workAt_Company', 'Post_hasCreator_Person', 'Post_hasTag_Tag',
-         'Post_isLocatedIn_Country']
-DEL_EDGES = ['Person_knows_Person', 'Person_likes_Comment', 'Person_likes_Post',
-             'Forum_hasMember_Person']
-NAMES = VERTICES + EDGES
 
 DRIVER = driver.instance(os.getenv('TuGraph_LIB_DIR'), os.getenv('TuGraph_ENDPOINT'))
 
@@ -30,8 +20,23 @@ def run_query(query:str, parameters:dict):
     # convert results from str to [dict]
     response = json.loads(result_str)
     if 'ERROR' in response:
-        raise Exception(f"Error happen in query:{query}, will stop!")
+        raise Exception(f"Error happen in query\n\n:{query}\n\nStop now, please check!")
     return result_str, duration
+
+def run_statistics_query(query:str):
+    start = time.time()
+    result_str = DRIVER.query(query, None)
+    duration = time.time() - start
+    # convert results from str to [dict]
+    response = json.loads(result_str)
+    if 'ERROR' in response:
+        raise Exception(f"Error happen in query:\n\n:{query}\n\nStop now, please check!")
+    elif len(response['node']) == 0:
+        return 0, duration
+    for item in response['node']:
+        return item['properties']['count'], duration
+    raise Exception(f"Error happen in query:\n\n:{query}\n\nresponse:{response}\n\nStop now, "
+                    f"please check!")
 
 def run_batch_update(batch_date, args):
     batch_id = batch_date.strftime('%Y-%m-%d')
