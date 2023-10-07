@@ -23,6 +23,7 @@ if __name__ == '__main__':
     parser.add_argument('--queries', action='store_true', help='Only run queries', required=False)
     parser.add_argument('--query', type=str, help='Only run query x', required=False)
     parser.add_argument('--max_time', type=int, default=3600, help="The maximum execution time for throughput, in seconds", required=False)
+    parser.add_argument('--bi19_precompute_batch_count', type=int, default=53, help="bi19 precompute batch count", required=False)
 
     args = parser.parse_args()
     sf = args.scale_factor

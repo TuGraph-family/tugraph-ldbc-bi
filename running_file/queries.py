@@ -145,7 +145,7 @@ def run_precompute(timings_file, sf, batch_id, batch_type, args):
     start = date(2010, 1, 1)
     query = read_query(f"{args.query_dir}/precompute_query/bi19_precompute.gremlin")
     # precompute q19
-    nbatch = 55  # can be smaller if memory is sufficient
+    nbatch = args.bi19_precompute_batch_count
     for i in range(nbatch):
         end = start + timedelta(days=365 * 3 // nbatch + 1)
         params = {'startDate': date_to_unixTimeStampMillis(start),

@@ -18,4 +18,5 @@ python3 -u benchmark.py --scale_factor ${SF} \
                         --para ${TuGraph_PARAMETER} \
                         --query_dir ${TuGraph_QUERIES_DIR} \
                         --work_dir ${TuGraph_WORK_DIR} \
+                        --bi19_precompute_batch_count ${BI19_PRECOMPUTE_BATCH_COUNT} \
                         --data_dir ${TuGraph_DATA_DIR} $@
