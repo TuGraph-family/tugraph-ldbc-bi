@@ -7,5 +7,5 @@ set -o pipefail
 
 cd deploy_cluster
 python3 deploy_cluster.py
-
+ 
 cd -

@@ -82,6 +82,15 @@ def wait_deploy_success(num):
         res = execute_command_result('./kubectl  --kubeconfig kube.yaml -n geaflow get po')
 
 def get_ingress_host():
+    ingress = execute_command_result('./kubectl  --kubeconfig kube.yaml -n geaflow get ingress')
+    while(ingress.count('\n')) != 3:
+        time.sleep(1)
+    ip = ingress.split('\n')[1].split()[3]
+    while (ip == "80"): 
+        time.sleep(1)
+        ingress = execute_command_result('./kubectl  --kubeconfig kube.yaml -n geaflow get ingress')
+        ip = ingress.split('\n')[1].split()[3]
+
     ingress = execute_command_result("./kubectl --kubeconfig kube.yaml -n geaflow get pod raycluster-sample-default-head-0 -o jsonpath='{.status.podIP}'")
     return ingress + ":8090"
 
@@ -104,7 +113,7 @@ def register_content(host, worker_info):
     cpu = worker_info['cpu']
     mem = worker_info['memory']
     size = worker_info['number']
-    res = _register_content(0, cpu, mem, size)
+    res = _register_content(host, 0, cpu, mem, size)
     if res['result'] == False:
         revision = res['data']['revision']
         _register_content(host, revision, cpu, mem, size)
@@ -113,8 +122,11 @@ def _check_deploy_ok(host):
     code = 0
     while code != 200:
         time.sleep(5)
-        res = requests.get("http://" + host + "/namespaces?show_node_spec=1")
-        code = res.status_code
+        try:
+            res = requests.get("http://" + host + "/namespaces?show_node_spec=1")
+            code = res.status_code
+        except requests.exceptions.ConnectionError:
+            code = 404
     return json.loads(res.text)
 
 
@@ -128,7 +140,7 @@ def check_deploy_ok(host, size):
         time.sleep(5)
         i += 5
         wait_process(i)
-        res = _check_deploy_ok()
+        res = _check_deploy_ok(host)
 
 
 if __name__ == '__main__':
@@ -147,6 +159,11 @@ if __name__ == '__main__':
     with open('master_info', 'w') as f:
         f.write(json.dumps(master_info))
     worker_info = aliyun_client.get_worker_info(node_attrs)
+    node_num = int(os.getenv('NUM_NODES'))
+    if node_num > worker_info['number']:
+        print('NUM_NODES {} exceeds resources {}'.format(node_num, worker_info['number']))
+        exit(1)
+    worker_info['number'] = node_num
     with open('worker_info', 'w') as f:
         f.write(json.dumps(worker_info))
 

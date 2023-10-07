@@ -5,18 +5,20 @@ cd ..
 
 # sf scale.
 export SF=
+ # number of pods or nodes
+export NUM_NODES=
 # remote path for origin data.
 export OSS_DIR=
-# k8s cluster name.
-export CLUSTER_NAME=
 # aliyun access_key_id.
 export AK=
 # aliyun access_key_secret.
 export SK=
 # graph store partition number.
 export PARTITION=
-# jvm heap size  for each worker process.
-export WORKER_JVM_GB=
+# k8s cluster name.
+export CLUSTER_NAME=geaflow-ldbc
+# jvm heap size for each worker process.
+export WORKER_JVM_GB=78
 
 
 if [ -e "driver.ip" ];then
@@ -40,7 +42,7 @@ export TuGraph_LIB_DIR=`pwd`/lib
 export BUCKET=geaflow-ldbc
 export ENDPOINT=oss-cn-hangzhou-internal.aliyuncs.com
 export JOB_NAME=geaflow1
-export JAR=gryphon-ldbc-0.9.jar
+export JAR=tugraph-ldbc-0.9.jar
 export JAR_MD5=5e295db97d966efa6d9f9bdf298fc64f
 
 popd > /dev/null
