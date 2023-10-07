@@ -8,9 +8,4 @@ cd ..
 
 . scripts/vars.sh
 
-if [ ! -d "${TuGraph_PARAMETER}" ]; then
-    echo "Parameter directory ${TuGraph_PARAMETER} does not exist."
-    exit 1
-fi
-
 python3 -u data_statistics.py ${SF}

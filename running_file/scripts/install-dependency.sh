@@ -28,5 +28,6 @@ cd tugraph-driver
 mvn clean install
 cp target/tugraph-*.jar ${script_path}/lib
 echo 'TuGraph client build success'
+echo
 echo 'All dependency install success'
 

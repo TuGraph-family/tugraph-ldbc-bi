@@ -49,18 +49,18 @@ def run_batch_update(batch_date, args):
     _, duration = run_query(query, parameters)
     print(f'Batch insert:\t{time.time() - t0:.4f}s')
 
-    print("\n## Maintain root_post ...")
+    print("\n## Maintain rootPost ...")
     parameters = {"startDate": date_to_unixTimeStampMillis(batch_date),
                   "endDate": date_to_unixTimeStampMillis(batch_date + timedelta(days=1)),
                   "dataDir": str(args.work_dir)}
     query = read_query(f"{args.query_dir}/precompute_query/root_post_precompute_delta.gremlin")
     __, duration1 = run_query(query, parameters)
-    print(f"Precompute delta root_post:\t{duration1:.4f}s")
+    print(f"Precompute delta rootPost:\t{duration1:.4f}s")
     parameters = {"dataDir": str(args.work_dir)}
     query = read_query(f"{args.query_dir}/dml/load_precompute_root_post.gremlin")
     __, duration2 = run_query(query, parameters)
-    print(f"Load delta root_post:\t{duration2:.4f}s")
-    print(f"Precompute delta root_post total time:\t{duration1 + duration2:.4f}s")
+    print(f"Load delta rootPost:\t{duration2:.4f}s")
+    print(f"Precompute delta rootPost total time:\t{duration1 + duration2:.4f}s")
 
     print("## Deletes")
     t1 = time.time()
