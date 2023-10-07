@@ -95,6 +95,16 @@ The parameter director name should use pattern: `parameters-sf{SF}`
 ```sh
 nohup ./scripts/run-benchmark.sh 1>benchmark.log 2>&1 < /dev/null &
 ```
+The benchmark result can be found in the `output/output-sf{SF}`:
+- load.csv
+
+  graph load time
+- timings.csv
+
+  bi query execute time
+- results.csv
+  
+  bi query execute result
 
 ## Collect graph statistics info
 ```sh
