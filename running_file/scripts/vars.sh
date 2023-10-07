@@ -44,6 +44,6 @@ export ENDPOINT=oss-cn-hangzhou-internal.aliyuncs.com
 export JOB_NAME=geaflow1
 export JAR=tugraph-ldbc-0.9.jar
 export JAR_MD5=5e295db97d966efa6d9f9bdf298fc64f
-export BI19_PRECOMPUTE_BATCH_COUNT=53
+export BI19_PRECOMPUTE_BATCH_COUNT=40
 
 popd > /dev/null
