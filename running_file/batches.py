@@ -9,16 +9,6 @@ from common.util import read_query
 from driver import driver
 
 VERTICES = ['Comment', 'Forum', 'Person', 'Post']
-EDGES = ['Comment_hasCreator_Person', 'Comment_hasTag_Tag', 'Comment_isLocatedIn_Country',
-         'Comment_replyOf_Comment', 'Comment_replyOf_Post', 'Forum_containerOf_Post',
-         'Forum_hasMember_Person', 'Forum_hasModerator_Person', 'Forum_hasTag_Tag',
-         'Person_hasInterest_Tag', 'Person_isLocatedIn_City', 'Person_knows_Person',
-         'Person_likes_Comment', 'Person_likes_Post', 'Person_studyAt_University',
-         'Person_workAt_Company', 'Post_hasCreator_Person', 'Post_hasTag_Tag',
-         'Post_isLocatedIn_Country']
-DEL_EDGES = ['Person_knows_Person', 'Person_likes_Comment', 'Person_likes_Post',
-             'Forum_hasMember_Person']
-NAMES = VERTICES + EDGES
 
 DRIVER = driver.instance(os.getenv('TuGraph_LIB_DIR'), os.getenv('TuGraph_ENDPOINT'))
 
@@ -30,8 +20,23 @@ def run_query(query:str, parameters:dict):
     # convert results from str to [dict]
     response = json.loads(result_str)
     if 'ERROR' in response:
-        raise Exception(f"Error happen in query:{query}, will stop!")
+        raise Exception(f"Error happen in query\n\n:{query}\n\nStop now, please check!")
     return result_str, duration
+
+def run_statistics_query(query:str):
+    start = time.time()
+    result_str = DRIVER.query(query, None)
+    duration = time.time() - start
+    # convert results from str to [dict]
+    response = json.loads(result_str)
+    if 'ERROR' in response:
+        raise Exception(f"Error happen in query:\n\n:{query}\n\nStop now, please check!")
+    elif len(response['node']) == 0:
+        return 0, duration
+    for item in response['node']:
+        return item['properties']['count'], duration
+    raise Exception(f"Error happen in query:\n\n:{query}\n\nresponse:{response}\n\nStop now, "
+                    f"please check!")
 
 def run_batch_update(batch_date, args):
     batch_id = batch_date.strftime('%Y-%m-%d')
@@ -44,18 +49,18 @@ def run_batch_update(batch_date, args):
     _, duration = run_query(query, parameters)
     print(f'Batch insert:\t{time.time() - t0:.4f}s')
 
-    print("\n## Maintain root_post ...")
+    print("\n## Maintain rootPost ...")
     parameters = {"startDate": date_to_unixTimeStampMillis(batch_date),
                   "endDate": date_to_unixTimeStampMillis(batch_date + timedelta(days=1)),
                   "dataDir": str(args.work_dir)}
     query = read_query(f"{args.query_dir}/precompute_query/root_post_precompute_delta.gremlin")
     __, duration1 = run_query(query, parameters)
-    print(f"Precompute delta root_post:\t{duration1:.4f}s")
+    print(f"Precompute delta rootPost:\t{duration1:.4f}s")
     parameters = {"dataDir": str(args.work_dir)}
     query = read_query(f"{args.query_dir}/dml/load_precompute_root_post.gremlin")
     __, duration2 = run_query(query, parameters)
-    print(f"Load delta root_post:\t{duration2:.4f}s")
-    print(f"Precompute delta root_post total time:\t{duration1 + duration2:.4f}s")
+    print(f"Load delta rootPost:\t{duration2:.4f}s")
+    print(f"Precompute delta rootPost total time:\t{duration1 + duration2:.4f}s")
 
     print("## Deletes")
     t1 = time.time()

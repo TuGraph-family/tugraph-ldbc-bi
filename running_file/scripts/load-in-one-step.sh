@@ -14,11 +14,11 @@ else
     DATE_COMMAND=date
 fi
 
-start_time=$(${DATE_COMMAND} +%s.%3N)
-
-
 . scripts/stop.sh
 . scripts/start.sh
+
+start_time=$(${DATE_COMMAND} +%s.%3N)
+
 python3 -u setup.py "${TuGraph_QUERIES_DIR}" "${TuGraph_DATA_DIR}" "${TuGraph_WORK_DIR}"
 
 end_time=$(${DATE_COMMAND} +%s.%3N)

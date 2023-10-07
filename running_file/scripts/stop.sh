@@ -8,6 +8,10 @@ cd ..
 
 . scripts/vars.sh
 
+echo
+echo "Stopping the services..."
+
 python3 job_client.py stop
 
-echo "TuGraph Stopped."
+echo
+echo "TuGraph stop success"

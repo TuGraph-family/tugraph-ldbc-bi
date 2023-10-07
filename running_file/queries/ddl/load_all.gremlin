@@ -81,7 +81,7 @@ select id, name, url from file_Country where type = 'Country';
 
 create table file_Forum (
   creationDate VARCHAR,
-  fourmId BIGINT,
+  forumId BIGINT,
   title VARCHAR
 ) with (
    input.type='file',
@@ -92,7 +92,7 @@ create table file_Forum (
 
 
 insert into ldbc_bi_graph(Forum.id, Forum.creationDate, Forum.title)
-select fourmId, UNIX_TIMESTAMP_MILLIS(creationDate, 'yyyy-MM-dd\'T\'HH:mm:ss.SSS\'+00:00\''), title from file_Forum;
+select forumId, UNIX_TIMESTAMP_MILLIS(creationDate, 'yyyy-MM-dd\'T\'HH:mm:ss.SSS\'+00:00\''), title from file_Forum;
 
 
 create table file_Person (

@@ -55,7 +55,7 @@ def run_query(query, query_num, parameters):
     # convert results from str to [dict]
     response = json.loads(result_str)
     if 'ERROR' in response:
-        raise Exception(f"Error happen in query:{query_num}, will stop!")
+        raise Exception(f"Error happen in query:\n\n{query_num}\n\nStop now, please check!")
     if query_num is None or query_num == -1:
         return f"""[{{"query": {query}}}]""", duration
     elif query_num == 11 and len(response['node']) == 0:
@@ -73,9 +73,7 @@ def run_query(query, query_num, parameters):
             value = None
             if key in result:
                 value = result[key]
-            result_tmp[key] = None if value == None else convert_value_to_string(value,
-                                                                                 result_descriptor[
-                                                                                     "type"])
+            result_tmp[key] = None if value == None else convert_value_to_string(value, result_descriptor[ "type"])
         result_tuples.append(result_tmp)
     return json.dumps(result_tuples), duration
 
@@ -87,8 +85,7 @@ def run_queries(query_variants, parameter_csvs, sf, results_file, timings_file, 
         query_num = int(re.sub("[^0-9]", "", query_variant))
         query_subvariant = re.sub("[^ab]", "", query_variant)
 
-        print(
-            f"========================= Q {query_num:02d}{query_subvariant.rjust(1)} =========================")
+        print(f"========================= Q {query_num:02d}{query_subvariant.rjust(1)} =========================")
         query_num = int(re.sub("[^0-9]", "", query_variant))
         parameters_csv = parameter_csvs[query_variant]
 
@@ -130,7 +127,7 @@ def run_precompute(timings_file, sf, batch_id, batch_type, args):
     # clean precompute weight: weight19, weight20
     query = read_query(f"{args.query_dir}/dml/del_precompute.gremlin")
     __, duration = run_query(query, None, None)
-    print(f'cleanup_precompute_weight:\t\t{duration:.4f} s')
+    print(f'cleanup precompute data:\t\t{duration:.4f} s')
 
     print(f"==================== Precompute for BI 4, 6, 19, 20 ======================")
     # compute values and print to files
@@ -145,7 +142,7 @@ def run_precompute(timings_file, sf, batch_id, batch_type, args):
     start = date(2010, 1, 1)
     query = read_query(f"{args.query_dir}/precompute_query/bi19_precompute.gremlin")
     # precompute q19
-    nbatch = 55  # can be smaller if memory is sufficient
+    nbatch = args.bi19_precompute_batch_count
     for i in range(nbatch):
         end = start + timedelta(days=365 * 3 // nbatch + 1)
         params = {'startDate': date_to_unixTimeStampMillis(start),
@@ -155,8 +152,7 @@ def run_precompute(timings_file, sf, batch_id, batch_type, args):
         print(f'precompute_bi19({start},{end}):{duration:.4f} s')
         start = end
     q19precomputation_total_duration = time.time() - t1
-    timings_file.write(
-        f"TuGraph|{sf}|{batch_id}|{batch_type}|q19_precomputation||{q19precomputation_total_duration}\n")
+    timings_file.write(f"TuGraph|{sf}|{batch_id}|{batch_type}|q19_precomputation||{q19precomputation_total_duration}\n")
 
     # load the files
     query = read_query(f"{args.query_dir}/dml/load_precompute.gremlin")

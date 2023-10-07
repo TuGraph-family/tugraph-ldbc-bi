@@ -43,7 +43,6 @@ class AliyunClient:
         runtime = util_models.RuntimeOptions()
         headers = {}
         try:
-            # 复制代码运行请自行打印 API 的返回值
             response = self.k8s_client.describe_clusters_v1with_options(describe_clusters_v1request, headers, runtime)
             cluster_info = []
             for cluster in response.body.clusters:
@@ -51,7 +50,6 @@ class AliyunClient:
                     return cluster.cluster_id
             return "" 
         except Exception as error:
-            # 如有需要，请打印 error
             UtilClient.assert_as_string(error.message)
 
     def save_kube_config(self, cluster_id):
@@ -64,7 +62,6 @@ class AliyunClient:
             with open('kube.yaml', 'w') as f:
                 f.write(kube_config)
         except Exception as error:
-            # 如有需要，请打印 error
             UtilClient.assert_as_string(error.message)
 
     def get_node_ids(self, cluster_id):
@@ -88,7 +85,6 @@ class AliyunClient:
         )
         runtime = util_models.RuntimeOptions()
         try:
-            # 复制代码运行请自行打印 API 的返回值
             response = self.ecs_client.describe_instances_with_options(describe_instances_request, runtime)
             attrs = []
             with open('cluster_nodes', 'w') as f:
@@ -110,11 +106,9 @@ class AliyunClient:
         )
         runtime = util_models.RuntimeOptions()
         try:
-            # 复制代码运行请自行打印 API 的返回值
             response = self.ecs_client.describe_disks_with_options(describe_disks_request, runtime)
             return response.body.disks.disk[0].size
         except Exception as error:
-            # 如有需要，请打印 error
             UtilClient.assert_as_string(error.message)
 
     def get_master_info(self, node_attrs): 
