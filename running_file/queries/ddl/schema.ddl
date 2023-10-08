@@ -172,7 +172,7 @@ create graph view ldbc_bi_graph (
     srcId BIGINT,
     tarId BIGINT,
     weight INTEGER,
-    edge prop(srcId, tarId, weight, 'weight19', 'OUT', 'DISTRIBUTE')
+    edge prop(srcId, tarId, weight, 'weight19', 'BOTH', 'DISTRIBUTE')
   ),
   edge weight20 (
     srcId BIGINT,

@@ -60,6 +60,8 @@ def run_query(query, query_num, parameters):
         return f"""[{{"query": {query}}}]""", duration
     elif query_num == 11 and len(response['node']) == 0:
         return f"""[{{"count": 0}}]""", duration
+    elif query_num == 15 and len(response['node']) == 0:
+        return f"""[{{"weight": -1.0}}]""", duration
     results = []
     for item in response['node']:
         results.append(item['properties'])
@@ -127,7 +129,7 @@ def run_precompute(timings_file, sf, batch_id, batch_type, args):
     # clean precompute weight: weight19, weight20
     query = read_query(f"{args.query_dir}/dml/del_precompute.gremlin")
     __, duration = run_query(query, None, None)
-    print(f'cleanup precompute data:\t\t{duration:.4f} s')
+    print(f'cleanup precompute data:\t\t{duration:.4f}s')
 
     print(f"==================== Precompute for BI 4, 6, 19, 20 ======================")
     # compute values and print to files
@@ -135,7 +137,7 @@ def run_precompute(timings_file, sf, batch_id, batch_type, args):
         query = read_query(f"{args.query_dir}/precompute_query/bi{q}_precompute.gremlin")
         parameters = {"dataDir": f"{str(args.work_dir)}"}
         __, duration = run_query(query, None, parameters)
-        print(f'precompute_bi{q}:\t\t{duration:.4f} s')
+        print(f'precompute_bi{q}:\t\t{duration:.4f}s')
         timings_file.write(f"TuGraph|{sf}|{batch_id}|{batch_type}|q{q}_precomputation||{duration}\n")
 
     t1 = time.time()
@@ -149,7 +151,7 @@ def run_precompute(timings_file, sf, batch_id, batch_type, args):
                   'endDate': date_to_unixTimeStampMillis(end),
                   'dataDir': str(args.work_dir)}
         __, duration = run_query(query, None, params)
-        print(f'precompute_bi19({start},{end}):{duration:.4f} s')
+        print(f'precompute_bi19({start},{end}):{duration:.4f}s')
         start = end
     q19precomputation_total_duration = time.time() - t1
     timings_file.write(f"TuGraph|{sf}|{batch_id}|{batch_type}|q19_precomputation||{q19precomputation_total_duration}\n")
@@ -158,5 +160,5 @@ def run_precompute(timings_file, sf, batch_id, batch_type, args):
     query = read_query(f"{args.query_dir}/dml/load_precompute.gremlin")
     parameters = {"dataDir": f"{str(args.work_dir)}"}
     __, duration = run_query(query, None, parameters)
-    print(f'load_precompute:\t\t{duration:.4f} s')
+    print(f'load_precompute:\t\t{duration:.4f}s')
     return time.time() - t0

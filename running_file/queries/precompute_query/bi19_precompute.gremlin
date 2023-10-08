@@ -1,9 +1,9 @@
 g.V().hasLabel('Person').has('creationDate',gte($startDate)).has('creationDate',lt($endDate)).as('personA')
 .both('knows').hasLabel('Person').as('personB')
 .in('hasCreator').hasLabel('Comment','Post')
-.union(__.outE('replyOf').as('outReplyOf').inV().as('outMessage1').out('hasCreator').where(eq('personA'))
+.union(__.out('replyOf').out('hasCreator').where(eq('personA'))
          .project('personAId','personBId','hasReplyOf').by(select('personA').id()).by(select('personB').id()).by(constant(0)),
-      __.inE('replyOf').as('inReplyOf').outV().as('inMessage1').out('hasCreator').where(eq('personA'))
+      __.in('replyOf').out('hasCreator').where(eq('personA'))
           .project('personAId','personBId','hasReplyOf').by(select('personA').id()).by(select('personB').id()).by(constant(1)))
 .group()
 .by(select('personAId','personBId'))

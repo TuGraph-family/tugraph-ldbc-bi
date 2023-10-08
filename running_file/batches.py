@@ -76,5 +76,5 @@ def run_batch_update(batch_date, args):
     query = read_query(f"{args.query_dir}/dml/del_Edge.gremlin")
     __, duration = run_query(query, parameters)
     print(f"Delete Edge:{duration:.4f}")
-    print(f'Batch delete:\t{time.time() - t1:.4f} s')
+    print(f'Batch delete:\t{time.time() - t1:.4f}s')
     return time.time() - t0
