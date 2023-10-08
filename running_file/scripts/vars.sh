@@ -36,7 +36,7 @@ fi
 export TuGraph_QUERIES_DIR=`pwd`/queries
 export TuGraph_ENDPOINT=${TuGraph_DRIVER_IP}:57401
 export TuGraph_PARAMETER=parameters/parameters-sf${SF}
-export TuGraph_DATA_DIR=oss://geaflow-ldbc/${OSS_DIR}
+export TuGraph_DATA_DIR=${OSS_DIR}
 export TuGraph_WORK_DIR=/home/admin/ray-pack/tmp/job
 export TuGraph_LIB_DIR=`pwd`/lib
 export BUCKET=geaflow-ldbc
