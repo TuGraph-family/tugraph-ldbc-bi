@@ -18,10 +18,10 @@ Create Aliyun K8s Cluster
 
 1. Login the deploy machine which will also be the LDBC driver running machine.
 
+```sh
+ssh root@{DRIVER_MACHINE}
 ```
-ssh root@114.55.31.35
-```
-* The deployment is implemented in the aliyun intranet.
+* The deployment is processed using the aliyun intranet.
 * Beforehand, the operator's ip addresses or ip ranges should be recorded to the aliyun network whitelist.
 
 2. clone repro from github
@@ -54,8 +54,6 @@ export AK=
 export SK=
 # graph store partition number.
 export PARTITION=
-# jvm heap size  for each worker process.
-export WORKER_JVM_GB=
 ```   
 
 5. download images and deploy TuGraph cluster
@@ -68,27 +66,13 @@ nohup scripts/deploy.sh > deploy.log 2>&1 < /dev/null &
 * the cluster nodes information is recored in `deploy_cluster/cluster_nodes` file.
 * you can login any node by password.
 
-6. login pod (optional)
-```sh
-cd deploy_cluster
-# get pod
-./kubectl  --kubeconfig kube.yaml -n geaflow get po
-# login
-./kubectl  --kubeconfig kube.yaml -n geaflow exec -it ${pod_name} -- /bin/bash
-
-# for example
-./kubectl  --kubeconfig kube.yaml -n geaflow exec -it raycluster-sample-8c64g-worker-1 -- /bin/bash
-```
-
-
-
 ## Download Data
-The data is os Aliyun object storage, and the loader can directly load it.
+The data is on Aliyun object storage, and the tugraph loader can directly load it.
 
 
 ## Update Environment Config
-Add parameters to the director:  ./parameters
-The parameter director name should use pattern: `parameters-sf{SF}`
+Add parameters to the directory:  ./parameters
+The parameter directory name should be patterned: `parameters-sf{SF}`
 
 
 ## Run benchmark
@@ -106,61 +90,100 @@ The benchmark result can be found in the `output/output-sf{SF}`:
   
   bi query execute result
 
-## Collect graph statistics info
+# Quick View of SF Benchmark Running
+## Prepare Step
 ```sh
-nohup ./scripts/data-statistics.sh 1>statistics.log 2>&1 < /dev/null &
-```
-The graph statistics result can be found in the `output/output-sf{SF}/statistics.csv`.
+ssh root@{DRIVER_MACHINE}
+rm -rf ldbc && mkdir ldbc && cd ldbc
 
-# Run SF10
+git clone https://github.com/TuGraph-family/tugraph-ldbc-bi
+cd tugraph-ldbc-bi/running_file/
+
+sh scripts/install-dependency.sh
+
+# if you have already setup cluster, clean the k8s cluster first.
+# sh scripts/delete_k8s.sh
+```
+
+## Run SF10
 
 
 ```sh
 # fill the variables below.
 # export SF=10
 # export NUM_NODES=1
-# export OSS_DIR=/sf10/graphs/csv/bi/composite-projected-fk/
 # export PARTITION=19
 vim scripts/vars.sh
 
 # setup cluster.
-nohup scripts/deploy.sh > deploy.log 2>&1 < /dev/null &
+nohup sh scripts/deploy.sh > deploy.log 2>&1 < /dev/null &
+tail -f deploy.log
 
 # run benchmark
-nohup ./scripts/run-benchmark.sh 1>benchmark.log 2>&1 < /dev/null &
+nohup sh scripts/run-benchmark.sh 1>benchmark.log 2>&1 < /dev/null &
+tail -f benchmark.log
 
 ```  
 
-# Run SF100
+## Run SF100
 ```sh
 # fill the variables below.
 # export SF=100
 # export NUM_NODES=1
-# export OSS_DIR=/sf100/graphs/csv/bi/composite-projected-fk/
 # export PARTITION=99
 vim scripts/vars.sh
 
 # setup cluster.
-nohup scripts/deploy.sh > deploy.log 2>&1 < /dev/null &
+nohup sh scripts/deploy.sh > deploy.log 2>&1 < /dev/null &
+tail -f deploy.log
 
 # run benchmark
-nohup ./scripts/run-benchmark.sh 1>benchmark.log 2>&1 < /dev/null &
+nohup sh scripts/run-benchmark.sh 1>benchmark.log 2>&1 < /dev/null &
+tail -f benchmark.log
 
 ``` 
 
-# Run SF30000
+## Run SF30000
 ```sh
 # fill the variables below.
 # export SF=30000
 # export NUM_NODES=72
-# export OSS_DIR=/sf30000/graphs/csv/bi/composite-projected-fk/
 # export PARTITION=1151
 vim scripts/vars.sh
 
 # setup cluster.
-nohup scripts/deploy.sh > deploy.log 2>&1 < /dev/null &
+nohup sh scripts/deploy.sh > deploy.log 2>&1 < /dev/null &
+tail -f deploy.log
 
 # run benchmark
-nohup ./scripts/run-benchmark.sh 1>benchmark.log 2>&1 < /dev/null &
+nohup sh scripts/run-benchmark.sh 1>benchmark.log 2>&1 < /dev/null &
+tail -f benchmark.log
 
 ``` 
+
+# Appendix
+## Login ecs
+All ecs nodes information is recored in `cluster_nodes` file, you can login by 
+```sh
+sshpass -e ssh -o StrictHostKeyChecking=no root@{IP_ADDRESS}
+```
+
+## Login pod
+```sh
+# get pod
+deploy_cluster/kubectl  --kubeconfig deploy_cluster/kube.yaml -n geaflow get pods -o wide
+# login
+deploy_cluster/kubectl  --kubeconfig deploy_cluster/kube.yaml -n geaflow exec -it ${pod_name} -- /bin/bash
+
+# for example
+deploy_cluster/kubectl  --kubeconfig deploy_cluster/kube.yaml -n geaflow exec -it raycluster-sample-8c64g-worker-1 -- /bin/bash
+```
+
+## Collect graph statistics info
+```sh
+nohup sh scripts/data-statistics.sh 1>statistics.log 2>&1 < /dev/null &
+tail -f statistics.log
+```
+The graph statistics result can be found in the `output/output-sf{SF}/statistics.csv`.
+
+

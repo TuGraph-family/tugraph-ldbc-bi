@@ -7,14 +7,14 @@ cd ..
 export SF=
  # number of pods or nodes
 export NUM_NODES=
-# remote path for origin data.
-export OSS_DIR=
 # aliyun access_key_id.
 export AK=
 # aliyun access_key_secret.
 export SK=
 # graph store partition number.
 export PARTITION=
+# remote path for origin data.
+export OSS_DIR=/sf${SF}/graphs/csv/bi/composite-projected-fk/
 # k8s cluster name.
 export CLUSTER_NAME=geaflow-ldbc
 # jvm heap size for each worker process.
