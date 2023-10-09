@@ -180,10 +180,18 @@ deploy_cluster/kubectl  --kubeconfig deploy_cluster/kube.yaml -n geaflow exec -i
 ```
 
 ## Collect graph statistics info
+# set sf=10
 ```sh
 nohup sh scripts/data-statistics.sh 1>statistics.log 2>&1 < /dev/null &
 tail -f statistics.log
 ```
 The graph statistics result can be found in the `output/output-sf{SF}/statistics.csv`.
+
+## Generate validate result
+```sh
+nohup ./scripts/run-benchmark.sh --validate 1>validate.log 2>&1 < /dev/null &
+tail -f validate.log
+```
+The query result can be found in the `output/output-sf{SF}/results.csv`.
 
 
