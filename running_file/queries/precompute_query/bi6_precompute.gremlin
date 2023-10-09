@@ -1,0 +1,5 @@
+g.V().hasLabel('Person')
+.project('person.id','popularityScore')
+.by(__.id())
+.by(__.in('hasCreator').hasLabel('Comment','Post').in('likes').hasLabel('Person').count())
+.io('$dataDir/Person_popularityScore_$taskIndex.csv').write().with(__.map{it.get().get('person.id')+"|"+it.get().get('popularityScore')})

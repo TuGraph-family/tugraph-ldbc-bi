@@ -1,0 +1,12 @@
+-- del 6 7 4
+g.withDynamicParameter(io('$dataDir/deletes/dynamic/Person/batch_id=$batchDate/*.gz').with('skipHeader','true').with('separator','|').read().iterator()))
+.V($1)
+.union(
+   __.identity().drop(),
+   __.in('hasCreator').hasLabel('Comment','Post').emit().repeat(__.in('replyOf')).drop()
+   __.in('hasModerator').hasLabel('Forum')
+     .or(has('title',startingWith('Album ')),has('title',startingWith('Wall ')))
+     .union(__.identity().drop(),
+            __.out('containerOf').hasLabel('Post'))
+     .emit().repeat(__.in('replyOf')).drop()
+   )

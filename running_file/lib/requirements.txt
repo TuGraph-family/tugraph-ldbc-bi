@@ -1,0 +1,12 @@
+multidict
+attrs
+yarl
+async_timeout
+idna_ssl
+charset_normalizer
+aiosignal
+oss2
+alibabacloud_ecs20140526==3.0.7
+alibabacloud_cs20151215==3.0.24
+jaydebeapi
+datetime

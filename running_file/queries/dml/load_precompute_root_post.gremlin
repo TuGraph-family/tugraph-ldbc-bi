@@ -1,0 +1,13 @@
+create table file_root_post (
+  commentCreationDate BIGINT,
+  commentId VARCHAR,
+  postId BIGINT
+) with (
+   input.type='file',
+   file.path='$dataDir/Comment_rootPost_Post_$taskIndex.csv',
+   skip.header='false',
+   column.separator='|'
+)
+
+insert into ldbc_bi_graph(rootPost.srcId, rootPost.tarId, rootPost.creationDate)
+select commentId, postId, commentCreationDate from file_root_post;
