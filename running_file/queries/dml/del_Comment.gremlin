@@ -1,2 +1,2 @@
 -- delete 7
-g.withDynamicParameter(io('$dataDir/deletes/dynamic/Comment/batch_id=$batchDate/*.gz').with('skipHeader','true').with('separator','|').read().iterator())).V($1).emit().repeat(__.in('replyOf')).drop()
+g.withDynamicParameter(io('$dataDir/deletes/dynamic/Comment/batch_id=$batchDate/*.gz').with('skipHeader','true').with('separator','|').read().iterator()).V($1).emit().repeat(__.in('replyOf')).drop()

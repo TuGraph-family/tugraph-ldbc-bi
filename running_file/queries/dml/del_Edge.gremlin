@@ -1,10 +1,10 @@
 -- del 2
-g.withDynamicParameter(io('$dataDir/deletes/dynamic/Person_likes_Post/batch_id=$batchDate/*.gz').with('skipHeader','true').with('separator','|').read().iterator())).V($1).outE('likes').where(__.inV().hasId($2)).drop()
+g.withDynamicParameter(io('$dataDir/deletes/dynamic/Person_likes_Post/batch_id=$batchDate/*.gz').with('skipHeader','true').with('separator','|').read().iterator()).V($1).outE('likes').where(__.inV().hasId($2)).drop()
 -- del 3
-g.withDynamicParameter(io('$dataDir/deletes/dynamic/Person_likes_Comment/batch_id=$batchDate/*.gz').with('skipHeader','true').with('separator','|').read().iterator())).V($1).outE('likes').where(__.inV().hasId($2)).drop()
+g.withDynamicParameter(io('$dataDir/deletes/dynamic/Person_likes_Comment/batch_id=$batchDate/*.gz').with('skipHeader','true').with('separator','|').read().iterator()).V($1).outE('likes').where(__.inV().hasId($2)).drop()
 
 -- del 5
-g.withDynamicParameter(io('$dataDir/deletes/dynamic/Forum_hasMember_Person/batch_id=$batchDate/*.gz').with('skipHeader','true').with('separator','|').read().iterator())).V($1).outE('hasMember').where(__.inV().hasId($2)).drop()
+g.withDynamicParameter(io('$dataDir/deletes/dynamic/Forum_hasMember_Person/batch_id=$batchDate/*.gz').with('skipHeader','true').with('separator','|').read().iterator()).V($1).outE('hasMember').where(__.inV().hasId($2)).drop()
 
 -- del 8
-g.withDynamicParameter(io('$dataDir/deletes/dynamic/Person_knows_Person/batch_id=$batchDate/*.gz').with('skipHeader','true').with('separator','|').read().iterator())).V($1).outE('knows').where(__.inV().hasId($2)).drop()
+g.withDynamicParameter(io('$dataDir/deletes/dynamic/Person_knows_Person/batch_id=$batchDate/*.gz').with('skipHeader','true').with('separator','|').read().iterator()).V($1).outE('knows').where(__.inV().hasId($2)).drop()

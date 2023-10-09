@@ -60,7 +60,7 @@ create graph view ldbc_bi_graph (
     locationIP VARCHAR,
     content VARCHAR,
     length INTEGER,
-    `language` varchar,
+    language VARCHAR,
     imageFile VARCHAR,
     identify id(id, 'Post', 'DISTRIBUTE')
   ),

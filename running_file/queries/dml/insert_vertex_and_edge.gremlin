@@ -21,7 +21,7 @@ create table file_Post (
   imageFile VARCHAR,
   locationIP VARCHAR,
   browserUsed VARCHAR,
-  `language` varchar,
+  language VARCHAR,
   content VARCHAR,
   length INTEGER
 ) with (
@@ -32,13 +32,13 @@ create table file_Post (
 );
 
 
-insert into ldbc_bi_graph(Post.id, Post.browserUsed, Post.creationDate, Post.locationIP, Post.content, Post.length, Post.`language`, Post.imageFile)
-select postId, browserUsed, UNIX_TIMESTAMP_MILLIS(creationDate, 'yyyy-MM-dd\'T\'HH:mm:ss.SSS\'+00:00\''), locationIP, content, length, `language`, imageFile from file_Post;
+insert into ldbc_bi_graph(Post.id, Post.browserUsed, Post.creationDate, Post.locationIP, Post.content, Post.length, Post.language, Post.imageFile)
+select postId, browserUsed, UNIX_TIMESTAMP_MILLIS(creationDate, 'yyyy-MM-dd\'T\'HH:mm:ss.SSS\'+00:00\''), locationIP, content, length, language, imageFile from file_Post;
 
 
 create table file_Forum (
   creationDate VARCHAR,
-  fourmId BIGINT,
+  forumId BIGINT,
   title VARCHAR
 ) with (
    input.type='file',
@@ -49,7 +49,7 @@ create table file_Forum (
 
 
 insert into ldbc_bi_graph(Forum.id, Forum.creationDate, Forum.title)
-select fourmId, UNIX_TIMESTAMP_MILLIS(creationDate, 'yyyy-MM-dd\'T\'HH:mm:ss.SSS\'+00:00\''), title from file_Forum;
+select forumId, UNIX_TIMESTAMP_MILLIS(creationDate, 'yyyy-MM-dd\'T\'HH:mm:ss.SSS\'+00:00\''), title from file_Forum;
 
 
 create table file_Person (
@@ -61,7 +61,7 @@ create table file_Person (
   birthday VARCHAR,
   locationIP VARCHAR,
   browserUsed VARCHAR,
-  `language` VARCHAR,
+  language VARCHAR,
   email VARCHAR
 ) with (
    input.type='file',
@@ -72,8 +72,8 @@ create table file_Person (
 
 
 insert into ldbc_bi_graph(Person.id, Person.firstName, Person.lastName, Person.gender, Person.birthday, Person.locationIP,
-                          Person.browserUsed, Person.`language`, Person.email, Person.creationDate, Person.popularityScore)
-select personId, firstName, lastName, gender, birthday, locationIP, browserUsed, `language`, email, UNIX_TIMESTAMP_MILLIS(creationDate, 'yyyy-MM-dd\'T\'HH:mm:ss.SSS\'+00:00\''), 0 from file_Person;
+                          Person.browserUsed, Person.language, Person.email, Person.creationDate, Person.popularityScore)
+select personId, firstName, lastName, gender, birthday, locationIP, browserUsed, language, email, UNIX_TIMESTAMP_MILLIS(creationDate, 'yyyy-MM-dd\'T\'HH:mm:ss.SSS\'+00:00\''), 0 from file_Person;
 
 
 -- insert edge

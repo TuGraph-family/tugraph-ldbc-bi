@@ -1,5 +1,5 @@
 -- del 6 7
-g.withDynamicParameter(io('$dataDir/deletes/dynamic/Post/batch_id=$batchDate/*.gz').with('skipHeader','true').with('separator','|').read().iterator()))
+g.withDynamicParameter(io('$dataDir/deletes/dynamic/Post/batch_id=$batchDate/*.gz').with('skipHeader','true').with('separator','|').read().iterator())
 .V($1)
 .union(__.identity(),
        __.in('rootPost').hasLabel('Comment'))
