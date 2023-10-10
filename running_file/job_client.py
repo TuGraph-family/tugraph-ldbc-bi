@@ -95,7 +95,7 @@ class GeaflowClient:
             "containerVcores": int(self.worker_info['cpu']),
             "workNodeNumber": int(self.worker_info['number'] + 1),
             "maximum_worker_processes": maximum_worker_processes,
-            "jvm_args": "-Xmx{}g,-Xms{}g,-XX:MaxDirectMemorySize={}g,-Dray.job.logging-level=WARN,-XX:MaxGCPauseMillis=1000".format(worker_jvm_gb, worker_jvm_gb, int(worker_jvm_gb / 2))
+            "jvm_args": "-Xmx{}g,-Xms{}g,-XX:MaxDirectMemorySize={}g,-Dray.job.logging-level=WARN,-XX:MaxGCPauseMillis=3000".format(worker_jvm_gb, worker_jvm_gb, int(worker_jvm_gb / 2))
         }
         numJavaWorkersPerProcess = clusterArgs["num_workers_per_process_java"]
         totalMemoryMb = clusterArgs["containerMemory"]

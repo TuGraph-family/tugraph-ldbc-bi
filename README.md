@@ -5,12 +5,14 @@
 ## Set up the cluster
 ### A. Create K8s Cluster
 Create Aliyun K8s Cluster
-* version:  1.26.3-aliyun.1, enhanced version based on Kubernetes 1.26.
+* k8s version:  1.26.3-aliyun.1, enhanced version based on Kubernetes 1.26.
 * Nodes:
     * 72 ecs.r7.16xlarge(64 vCPU 512 GiB) with ESSD AutoPL (capacity 1024GB) as workers
         *  throughput 1131 MB/s， iops 50k
+        *  network 32Gbit/s
         *  Intel(R) Xeon(R) Platinum 8369B CPU @ 2.70GHz, 64 cores, 512G, Alibaba Group Enterprise Linux Server release 7.2 (Paladin)
     * 1 ecs.g6.2xlarge(8 vCPU 32 GiB) as master with ESSD P0 (capacity 80G)
+        *  network 2.5Gbit/s
         * Intel(R) Xeon(R) Platinum 8269CY CPU @ 2.50GHz, 8 cores, 32G, Alibaba Group Enterprise Linux Server release 7.2 (Paladin)
 
 ### B. Configure intances and Set up TuGraph Cluster

@@ -18,7 +18,7 @@ export OSS_DIR=/sf${SF}/graphs/csv/bi/composite-projected-fk/
 # k8s cluster name.
 export CLUSTER_NAME=geaflow-ldbc
 # jvm heap size for each worker process.
-export WORKER_JVM_GB=78
+export WORKER_JVM_GB=74
 
 
 if [ -e "driver.ip" ];then
@@ -44,6 +44,13 @@ export ENDPOINT=oss-cn-hangzhou-internal.aliyuncs.com
 export JOB_NAME=geaflow1
 export JAR=tugraph-ldbc-0.9.jar
 export JAR_MD5=86025d343dd4346728277fdca82c844b
-export BI19_PRECOMPUTE_BATCH_COUNT=53
+
+if [ $SF -eq 30000 ];then
+    export BI19_PRECOMPUTE_BATCH_COUNT=50
+else
+    export BI19_PRECOMPUTE_BATCH_COUNT=1
+fi
+
+echo $BI19_PRECOMPUTE_BATCH_COUNT
 
 popd > /dev/null
