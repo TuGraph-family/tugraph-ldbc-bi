@@ -43,7 +43,7 @@ export BUCKET=geaflow-ldbc
 export ENDPOINT=oss-cn-hangzhou-internal.aliyuncs.com
 export JOB_NAME=geaflow1
 export JAR=tugraph-ldbc-0.9.jar
-export JAR_MD5=86025d343dd4346728277fdca82c844b
+export JAR_MD5=6692bc6df5ab3622ff79ca9cb4f67c9f
 
 if [ $SF -eq 30000 ];then
     export BI19_PRECOMPUTE_BATCH_COUNT=50
