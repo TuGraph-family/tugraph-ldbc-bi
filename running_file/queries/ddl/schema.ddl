@@ -3,7 +3,7 @@ create graph view ldbc_bi_graph (
     id BIGINT,
     name VARCHAR,
     url VARCHAR,
-    identify id(id, 'City', 'LOCAL')
+    identify id(id, 'City')
   ),
   vertex Comment (
     id BIGINT,
@@ -12,32 +12,32 @@ create graph view ldbc_bi_graph (
     locationIP VARCHAR,
     content VARCHAR,
     length INTEGER,
-    identify id(id, 'Comment', 'DISTRIBUTE')
+    identify id(id, 'Comment')
   ),
   vertex Company (
     id BIGINT,
     name VARCHAR,
     url VARCHAR,
-    identify id(id, 'Company', 'LOCAL')
+    identify id(id, 'Company')
   ),
   vertex Continent (
     id BIGINT,
     name VARCHAR,
     url VARCHAR,
-    identify id(id, 'Continent', 'LOCAL')
+    identify id(id, 'Continent')
   ),
   vertex Country (
     id BIGINT,
     name VARCHAR,
     url VARCHAR,
-    identify id(id, 'Country', 'LOCAL')
+    identify id(id, 'Country')
   ),
   vertex Forum (
     id BIGINT,
     title VARCHAR,
     creationDate BIGINT,
     memberCount INTEGER,
-    identify id(id, 'Forum', 'DISTRIBUTE')
+    identify id(id, 'Forum')
   ),
   vertex Person (
     id BIGINT,
@@ -51,7 +51,7 @@ create graph view ldbc_bi_graph (
     email VARCHAR
     creationDate BIGINT,
     popularityScore INTEGER,
-    identify id(id, 'Person', 'DISTRIBUTE')
+    identify id(id, 'Person')
   ),
   vertex Post (
     id BIGINT,
@@ -62,122 +62,122 @@ create graph view ldbc_bi_graph (
     length INTEGER,
     language VARCHAR,
     imageFile VARCHAR,
-    identify id(id, 'Post', 'DISTRIBUTE')
+    identify id(id, 'Post')
   ),
   vertex Tag (
     id BIGINT,
     name VARCHAR,
     url VARCHAR,
-    identify id(id, 'Tag', 'LOCAL')
+    identify id(id, 'Tag')
   ),
   vertex TagClass (
     id BIGINT,
     name VARCHAR,
     url VARCHAR,
-    identify id(id, 'TagClass', 'LOCAL')
+    identify id(id, 'TagClass')
   )
   vertex University (
     id BIGINT,
     name VARCHAR,
     url VARCHAR,
-    identify id(id, 'University', 'LOCAL')
+    identify id(id, 'University')
   ),
   edge containerOf (
     srcId BIGINT,
     tarId BIGINT,
-    edge prop(srcId, tarId, 0, 'containerOf', 'BOTH', 'DISTRIBUTE')
+    edge prop(srcId, tarId, 0, 'containerOf')
   ),
   edge hasCreator (
     srcId BIGINT,
     tarId BIGINT,
-    edge prop(srcId, tarId, 0, 'hasCreator', 'BOTH', 'DISTRIBUTE')
+    edge prop(srcId, tarId, 0, 'hasCreator')
   ),
   edge hasInterest (
     srcId BIGINT,
     tarId BIGINT,
-    edge prop(srcId, tarId, 0, 'hasInterest', 'BOTH', 'DISTRIBUTE')
+    edge prop(srcId, tarId, 0, 'hasInterest')
   ),
   edge hasMember (
     srcId BIGINT,
     tarId BIGINT,
     creationDate BIGINT,
-    edge prop(srcId, tarId, creationDate, 'hasMember', 'BOTH', 'DISTRIBUTE')
+    edge prop(srcId, tarId, creationDate, 'hasMember')
   ),
   edge hasModerator (
     srcId BIGINT,
     tarId BIGINT,
-    edge prop(srcId, tarId, 0, 'hasModerator', 'BOTH', 'DISTRIBUTE')
+    edge prop(srcId, tarId, 0, 'hasModerator')
   ),
   edge hasTag (
     srcId BIGINT,
     tarId BIGINT,
-    edge prop(srcId, tarId, 0, 'hasTag', 'BOTH', 'DISTRIBUTE')
+    edge prop(srcId, tarId, 0, 'hasTag')
   ),
   edge hasType (
     srcId BIGINT,
     tarId BIGINT,
-    edge prop(srcId, tarId, 0, 'hasType', 'BOTH', 'LOCAL')
+    edge prop(srcId, tarId, 0, 'hasType')
   ),
   edge isLocatedIn (
     srcId BIGINT,
     tarId BIGINT,
-    edge prop(srcId, tarId, 0, 'isLocatedIn', 'BOTH', 'DISTRIBUTE')
+    edge prop(srcId, tarId, 0, 'isLocatedIn')
   ),
   edge isPartOf (
     srcId BIGINT,
     tarId BIGINT,
-    edge prop(srcId, tarId, 0, 'isPartOf', 'BOTH', 'LOCAL')
+    edge prop(srcId, tarId, 0, 'isPartOf')
   ),
   edge isSubClassOf (
     srcId BIGINT,
     tarId BIGINT,
-    edge prop(srcId, tarId, 0, 'isSubClassOf', 'BOTH', 'LOCAL')
+    edge prop(srcId, tarId, 0, 'isSubClassOf')
   ),
   edge knows (
     srcId BIGINT,
     tarId BIGINT,
     creationDate BIGINT,
-    edge prop(srcId, tarId, creationDate, 'knows', 'BOTH', 'DISTRIBUTE')
+    edge prop(srcId, tarId, creationDate, 'knows')
   ),
   edge likes (
     srcId BIGINT,
     tarId BIGINT,
     creationDate BIGINT,
-    edge prop(srcId, tarId, creationDate, 'likes', 'BOTH', 'DISTRIBUTE')
+    edge prop(srcId, tarId, creationDate, 'likes')
   ),
   edge replyOf (
     srcId BIGINT,
     tarId BIGINT,
-    edge prop(srcId, tarId, 0, 'replyOf', 'BOTH', 'DISTRIBUTE')
+    edge prop(srcId, tarId, 0, 'replyOf')
   ),
   edge studyAt (
     srcId BIGINT,
     tarId BIGINT,
     classYear INTEGER,
-    edge prop(srcId, tarId, 0, 'studyAt', 'BOTH', 'DISTRIBUTE')
+    edge prop(srcId, tarId, 0, 'studyAt')
   ),
   edge workAt (
     srcId BIGINT,
     tarId BIGINT,
     workFrom INTEGER,
-    edge prop(srcId, tarId, 0, 'workAt', 'BOTH', 'DISTRIBUTE')
+    edge prop(srcId, tarId, 0, 'workAt')
   ),
   edge rootPost (
     srcId BIGINT,
     tarId BIGINT,
     commentCreationDate BIGINT,
-    edge prop(srcId, tarId, commentCreationDate, 'rootPost', 'BOTH', 'DISTRIBUTE')
+    edge prop(srcId, tarId, commentCreationDate, 'rootPost')
   ),
   edge weight19 (
     srcId BIGINT,
     tarId BIGINT,
     weight INTEGER,
-    edge prop(srcId, tarId, weight, 'weight19', 'BOTH', 'DISTRIBUTE')
+    edge prop(srcId, tarId, weight, 'weight19')
   ),
   edge weight20 (
     srcId BIGINT,
     tarId BIGINT,
     weight INTEGER,
-    edge prop(srcId, tarId, weight, 'weight20', 'BOTH', 'DISTRIBUTE')
+    edge prop(srcId, tarId, weight, 'weight20')
   )
 )
