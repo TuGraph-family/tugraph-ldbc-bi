@@ -51,6 +51,4 @@ else
     export BI19_PRECOMPUTE_BATCH_COUNT=1
 fi
 
-echo $BI19_PRECOMPUTE_BATCH_COUNT
-
 popd > /dev/null
