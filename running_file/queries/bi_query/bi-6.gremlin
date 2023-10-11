@@ -1,5 +1,6 @@
 g.V().hasLabel('Tag').has('name','$tag')
 .in('hasTag')
+.hasLabel('Comment','Post')
 .project('person1.id','subMsgPopularityScore')
 .by(__.out('hasCreator').id())
 .by(__.in('likes').dedup().values('popularityScore').sum())

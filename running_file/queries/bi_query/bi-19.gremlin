@@ -1,6 +1,6 @@
 g.V($city1Id).in('isLocatedIn').hasLabel('Person').shortestPath()
                     .with(ShortestPath.target, __.out('isLocatedIn').hasId($city2Id))
-                    .with(ShortestPath.maxDistance, 10000)
+                    .with(ShortestPath.maxDistance, 1000)
                     .with(ShortestPath.edges, bothE('weight19'))
                     .with(ShortestPath .includeStartId, true)
                     .with(ShortestPath .includeTargetId, true)

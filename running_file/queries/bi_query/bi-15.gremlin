@@ -1,6 +1,6 @@
 g.V($person1Id).shortestPath().
                     with(ShortestPath.target, __.hasId($person2Id)).
-                    with(ShortestPath.maxDistance, 10000).
+                    with(ShortestPath.maxDistance, 1000).
                     with(ShortestPath.edges, bothE('knows')).
                     with(ShortestPath.distance, __.project('case1Count', 'case2Count')
 .by(

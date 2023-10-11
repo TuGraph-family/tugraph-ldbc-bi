@@ -3,7 +3,7 @@ g.withDynamicParameter(io('$dataDir/deletes/dynamic/Person/batch_id=$batchDate/*
 .V($1)
 .union(
    __.identity().drop(),
-   __.in('hasCreator').hasLabel('Comment','Post').emit().repeat(__.in('replyOf')).drop()
+   __.in('hasCreator').hasLabel('Comment','Post').emit().repeat(__.in('replyOf')).drop(),
    __.in('hasModerator').hasLabel('Forum')
      .or(has('title',startingWith('Album ')),has('title',startingWith('Wall ')))
      .union(__.identity().drop(),

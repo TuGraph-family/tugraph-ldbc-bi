@@ -165,8 +165,8 @@ create graph view ldbc_bi_graph (
   edge rootPost (
     srcId BIGINT,
     tarId BIGINT,
-    commentCreationDate BIGINT,
-    edge prop(srcId, tarId, commentCreationDate, 'rootPost')
+    creationDate BIGINT,
+    edge prop(srcId, tarId, creationDate, 'rootPost')
   ),
   edge weight19 (
     srcId BIGINT,
