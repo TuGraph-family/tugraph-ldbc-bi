@@ -1,0 +1,12 @@
+g.withSack(0,sum).V().hasLabel('Tag').has('name','$tag')
+.union(__.in('hasInterest').hasLabel('Person').sack(sum).by(constant(100)),
+       __.in('hasTag').hasLabel('Comment','Post').has('creationDate',inside($startDate,$endDate))
+          .out('hasCreator').sack(sum).by(constant(1)))
+.property('score',sack())
+.V().hasLabel('Person')
+.project('person.id','score','friendsScore')
+.by(__.id())
+.by(__.values('score'))
+.by(__.both('knows').coalesce(values('score'),constant(0)).sum())
+.order().by(math('score + friendsScore'),desc).by(select('person.id'),asc)
+.limit(100)

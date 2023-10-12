@@ -1,0 +1,12 @@
+g.V()
+.union(
+   __.hasLabel('Post').has('language',within($languages))
+     .union(__.identity(),
+            __.in('rootPost')).has('length',gt(0)).has('length',lt($lengthThreshold)).has('creationDate',gt($startDate))
+              .groupCount().by(__.out('hasCreator').id()).unfold()
+              .project('personId','messageCount').by(select(keys)).by(select(values)),
+   __.hasLabel('Person').project('personId','messageCount').by(id()).by(constant(0)))
+.group().by(select('personId')).by(select('messageCount').sum()).unfold()
+.groupCount().by(select(values)).unfold()
+.project('personCount','messageCount').by(select(values)).by(select(keys))
+.order().by(select('personCount'),desc).by(select('messageCount'),desc)

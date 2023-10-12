@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.antfin.arc.cluster.coordinator.proto";
+
+
+service CoordinatorService {
+
+  // Execute query and return query result.
+  rpc executeQuery(QueryRequest) returns (QueryResult) {
+  }
+
+  // Cancel query which is specified by queryId in QueryCancelRequest.
+  rpc cancelQuery(QueryCancelRequest) returns (QueryCancelResult) {
+  }
+
+  }
+
+message QueryRequest {
+  string gremlinQuery = 1;
+  repeated QueryConfig queryConfig = 2;
+}
+
+message QueryConfig {
+  string key = 1;
+  string value = 2;
+}
+
+message QueryCancelRequest {
+  // The query which will be cancelled.
+  int64 queryId = 1;
+}
+
+// Query result.
+message QueryResult {
+  // It's be used to trace user query.
+  int64 queryId = 1;
+  // Status of the current query.
+  bool queryStatus = 2;
+  // Get the query result if status is true.
+  string queryResult = 3;
+  // Get the query error if status is false.
+  string queryError = 4;
+}
+
+// Query cancel status.
+message QueryCancelResult {
+  // The query which will be cancelled.
+  int64 queryId = 1;
+  // Cancel status of the current query.
+  bool cancelStatus = 2;
+  // Get the query cancel error if status is false.
+  string cancelError = 3;
+}

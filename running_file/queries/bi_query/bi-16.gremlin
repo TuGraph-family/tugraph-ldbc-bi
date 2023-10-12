@@ -1,0 +1,44 @@
+g.V().hasLabel('Person')
+.union(
+   __.match(
+      __.as('personA').in('hasCreator').hasLabel('Post','Comment').where(and(__.values('creationDate')
+         .math('_ - (_ % 86400000)').is(eq($dateA)),out('hasTag').has('name','$tagA'))).as('messageA'),
+      __.as('personOtherA').in('hasCreator').hasLabel('Post','Comment').where(__.values('creationDate')
+         .math('_ - (_ % 86400000)').is(eq($dateA))),
+      __.as('personA').coalesce(both('knows'),identity()).as('personOtherA'))
+   .select('personA','personOtherA','messageA')
+   .project('personAId','personOtherAId','messageAId')
+   .by(select('personA').id())
+   .by(select('personOtherA').id())
+   .by(select('messageA').id())
+   .group().by(select('personAId')).unfold()
+   .project('personAId','personOtherACount','messageCountA')
+   .by(select(keys)).by(select(values).unfold().select('personOtherAId').dedup().count())
+   .by(select(values).unfold().select('messageAId').dedup().count())
+   .where(select('personOtherACount').is(lte($maxKnowsLimit)))
+   .project('person.id','messageCountA')
+   .by(select('personAId'))
+   .by(select('messageCountA')),
+   __.match(
+      __.as('personB').in('hasCreator').hasLabel('Post','Comment').where(and(__.values('creationDate').math('_ - (_ % 86400000)').is(eq($dateB)),out('hasTag').has('name','$tagB'))).as('messageB'),
+      __.as('personOtherB').in('hasCreator').hasLabel('Post','Comment').where(__.values('creationDate').math('_ - (_ % 86400000)').is(eq($dateB))),
+      __.as('personB').coalesce(both('knows'),identity()).as('personOtherB'))
+   .select('personB','personOtherB','messageB')
+   .project('personBId','personOtherBId','messageBId')
+   .by(select('personB').id()).by(select('personOtherB').id())
+   .by(select('messageB').id()).group().by(select('personBId')).unfold()
+   .project('personBId','personOtherBCount','messageCountB')
+   .by(select(keys))
+   .by(select(values).unfold().select('personOtherBId').dedup().count())
+   .by(select(values).unfold().select('messageBId').dedup().count())
+   .where(select('personOtherBCount').is(lte($maxKnowsLimit)))
+   .project('person.id','messageCountB')
+   .by(select('personBId')).by(select('messageCountB'))
+   )
+.group().by(select('person.id')).unfold().filter(select(values).unfold().count().is(eq(2)))
+.project('person.id','messageCountA','messageCountB')
+.by(select(keys))
+.by(select(values).unfold().select('messageCountA'))
+.by(select(values).unfold().select('messageCountB'))
+.order().by(math('messageCountA + messageCountB'),desc).by(select('person.id'),asc)
+.limit(20)

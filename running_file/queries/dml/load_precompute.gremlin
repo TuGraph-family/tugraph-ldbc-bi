@@ -1,0 +1,57 @@
+create table file_ForumCount (
+  forumId BIGINT,
+  memberCount INTEGER
+) with (
+   input.type='file',
+   file.path='$dataDir/Forum_messageCount_Country_$taskIndex.csv',
+   skip.header='false',
+   column.separator='|'
+);
+
+insert into ldbc_bi_graph(Forum.id, Forum.memberCount)
+select forumId, memberCount from file_ForumCount;
+
+
+create table file_PersonPopularityScore (
+  personId BIGINT,
+  popularityScore INTEGER
+) with (
+   input.type='file',
+   file.path='$dataDir/Person_popularityScore_$taskIndex.csv',
+   skip.header='false',
+   column.separator='|'
+);
+
+insert into ldbc_bi_graph(Person.id, Person.popularityScore)
+select personId, popularityScore from file_PersonPopularityScore;
+
+
+create table file_weight19 (
+  person1Id BIGINT,
+  person2Id BIGINT,
+  weight INTEGER,
+  hasReplyOf INTEGER
+) with (
+   input.type='file',
+   file.path='$dataDir/Person_weight19_Person_$taskIndex.csv',
+   skip.header='false',
+   column.separator='|'
+);
+
+insert into ldbc_bi_graph(weight19.srcId, weight19.tarId, weight19.weight)
+select person1Id, person2Id, weight * 10 + hasReplyOf from file_weight19;
+
+
+create table file_weight20 (
+  person1Id BIGINT,
+  person2Id BIGINT,
+  weight INTEGER
+) with (
+   input.type='file',
+   file.path='$dataDir/Person_weight20_Person_$taskIndex.csv',
+   skip.header='false',
+   column.separator='|'
+);
+
+insert into ldbc_bi_graph(weight20.srcId, weight20.tarId, weight20.weight)
+select person1Id, person2Id, weight from file_weight20;

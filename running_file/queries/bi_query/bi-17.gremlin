@@ -1,0 +1,30 @@
+g.V().hasLabel('Tag').has('name','$tag')
+.match(__.as('tag').in('hasTag').hasLabel('Comment','Post').as('message1'),
+       __.as('message1').out('hasCreator').hasLabel('Person').as('person1'),
+       __.as('message1').coalesce(hasLabel('Post'),out('rootPost')).as('post1'),
+       __.as('post1').in('containerOf').hasLabel('Forum').as('forum1'),
+       __.as('forum1').out('hasMember').hasLabel('Person').as('person2'),
+       __.as('forum1').out('hasMember').hasLabel('Person').as('person3'),
+       __.as('person2').in('hasCreator').hasLabel('Comment').as('comment'),
+       __.as('person3').in('hasCreator').hasLabel('Comment','Post').as('message2'),
+       __.as('comment').out('replyOf').as('message2'),
+       __.as('message2').out('hasTag').hasLabel('Tag').as('tag'),
+       __.as('comment').out('hasTag').hasLabel('Tag').as('tag'),
+       __.as('message2').coalesce(hasLabel('Post'),out('rootPost')).as('post2'),
+       __.as('post2').in('containerOf').as('forum2'),
+       __.not(__.as('forum2').out('hasMember').hasLabel('Person').as('person1'))
+)
+.where('forum1',neq('forum2'))
+.where('person2',neq('person3'))
+.where('message1',lt('message2')).by(__.values('creationDate').math('_+$delta*3600*1000')).by(__.values('creationDate'))
+.select('person1','message1')
+.groupCount()
+.by(__.select('person1').id())
+.unfold()
+.project('person1.id','messageCount')
+.by(select(keys))
+.by(select(values))
+.order()
+.by('messageCount',desc)
+.by('person1.id',asc)
+.limit(10)

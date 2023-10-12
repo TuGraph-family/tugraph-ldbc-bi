@@ -1,0 +1,520 @@
+create table file_City (
+  id BIGINT,
+  name VARCHAR,
+  url VARCHAR,
+  type VARCHAR
+) with (
+   input.type='file',
+   file.path='$dataDir/initial_snapshot/static/Place/*.gz',
+   skip.header='true',
+   column.separator='|'
+);
+
+insert into ldbc_bi_graph(City.id, City.name, City.url)
+select id, name, url from file_City where type = 'City';
+
+
+create table file_Comment (
+  creationDate VARCHAR,
+  commentId BIGINT,
+  locationIP VARCHAR,
+  browserUsed VARCHAR,
+  content VARCHAR,
+  length INTEGER
+) with (
+   input.type='file',
+   file.path='$dataDir/initial_snapshot/dynamic/Comment/*.gz',
+   skip.header='true',
+   column.separator='|'
+);
+
+insert into ldbc_bi_graph(Comment.id, Comment.browserUsed, Comment.creationDate, Comment.locationIP, Comment.content, Comment.length)
+select commentId, browserUsed, UNIX_TIMESTAMP_MILLIS(creationDate, 'yyyy-MM-dd\'T\'HH:mm:ss.SSS\'+00:00\''), locationIP, content, length from file_Comment;
+
+create table file_Company (
+  id BIGINT,
+  type VARCHAR,
+  name VARCHAR,
+  url VARCHAR
+) with (
+   input.type='file',
+   file.path='$dataDir/initial_snapshot/static/Organisation/*.gz',
+   skip.header='true',
+   column.separator='|'
+);
+
+insert into ldbc_bi_graph(Company.id, Company.name, Company.url)
+select id, name, url from file_Company where type = 'Company';
+
+
+create table file_Continent (
+  id BIGINT,
+  name VARCHAR,
+  url VARCHAR,
+  type VARCHAR
+) with (
+   input.type='file',
+   file.path='$dataDir/initial_snapshot/static/Place/*.gz',
+   skip.header='true',
+   column.separator='|'
+);
+
+insert into ldbc_bi_graph(Continent.id, Continent.name, Continent.url)
+select id, name, url from file_Continent where type = 'Continent';
+
+
+create table file_Country (
+  id BIGINT,
+  name VARCHAR,
+  url VARCHAR,
+  type VARCHAR
+) with (
+   input.type='file',
+   file.path='$dataDir/initial_snapshot/static/Place/*.gz',
+   skip.header='true',
+   column.separator='|'
+);
+
+insert into ldbc_bi_graph(Country.id, Country.name, Country.url)
+select id, name, url from file_Country where type = 'Country';
+
+
+create table file_Forum (
+  creationDate VARCHAR,
+  forumId BIGINT,
+  title VARCHAR
+) with (
+   input.type='file',
+   file.path='$dataDir/initial_snapshot/dynamic/Forum/*.gz',
+   skip.header='true',
+   column.separator='|'
+);
+
+
+insert into ldbc_bi_graph(Forum.id, Forum.creationDate, Forum.title)
+select forumId, UNIX_TIMESTAMP_MILLIS(creationDate, 'yyyy-MM-dd\'T\'HH:mm:ss.SSS\'+00:00\''), title from file_Forum;
+
+
+create table file_Person (
+  creationDate VARCHAR,
+  personId BIGINT,
+  firstName VARCHAR,
+  lastName VARCHAR,
+  gender VARCHAR,
+  birthday VARCHAR,
+  locationIP VARCHAR,
+  browserUsed VARCHAR,
+  language VARCHAR,
+  email VARCHAR
+) with (
+   input.type='file',
+   file.path='$dataDir/initial_snapshot/dynamic/Person/*.gz',
+   skip.header='true',
+   column.separator='|'
+);
+
+
+insert into ldbc_bi_graph(Person.id, Person.firstName, Person.lastName, Person.gender, Person.birthday, Person.locationIP,
+                          Person.browserUsed, Person.language, Person.email, Person.creationDate, Person.popularityScore)
+select personId, firstName, lastName, gender, birthday, locationIP, browserUsed, language, email, UNIX_TIMESTAMP_MILLIS(creationDate, 'yyyy-MM-dd\'T\'HH:mm:ss.SSS\'+00:00\''), 0 from file_Person;
+
+
+create table file_Post (
+  creationDate VARCHAR,
+  postId BIGINT,
+  imageFile VARCHAR,
+  locationIP VARCHAR,
+  browserUsed VARCHAR,
+  language VARCHAR,
+  content VARCHAR,
+  length INTEGER
+) with (
+   input.type='file',
+   file.path='$dataDir/initial_snapshot/dynamic/Post/*.gz',
+   skip.header='true',
+   column.separator='|'
+);
+
+
+insert into ldbc_bi_graph(Post.id, Post.browserUsed, Post.creationDate, Post.locationIP, Post.content, Post.length, Post.language, Post.imageFile)
+select postId, browserUsed, UNIX_TIMESTAMP_MILLIS(creationDate, 'yyyy-MM-dd\'T\'HH:mm:ss.SSS\'+00:00\''), locationIP, content, length, language, imageFile from file_Post;
+
+create table file_Tag (
+  id BIGINT,
+  name VARCHAR,
+  url VARCHAR
+) with (
+   input.type='file',
+   file.path='$dataDir/initial_snapshot/static/Tag/*.gz',
+   skip.header='true',
+   column.separator='|'
+);
+
+insert into ldbc_bi_graph(Tag.id, Tag.name, Tag.url)
+select id, name, url from file_Tag;
+
+
+create table file_TagClass (
+  id BIGINT,
+  name VARCHAR,
+  url VARCHAR
+) with (
+   input.type='file',
+   file.path='$dataDir/initial_snapshot/static/TagClass/*.gz',
+   skip.header='true',
+   column.separator='|'
+);
+
+insert into ldbc_bi_graph(TagClass.id, TagClass.name, TagClass.url)
+select id, name, url from file_TagClass;
+
+
+create table file_University (
+  id BIGINT,
+  type VARCHAR,
+  name VARCHAR,
+  url VARCHAR
+) with (
+   input.type='file',
+   file.path='$dataDir/initial_snapshot/static/Organisation/*.gz',
+   skip.header='true',
+   column.separator='|'
+);
+
+insert into ldbc_bi_graph(University.id, University.name, University.url)
+select id, name, url from file_University where type = 'University';
+
+
+
+create table file_Forum_containerOf_Post (
+   creationDate VARCHAR,
+   forumId BIGINT,
+   postId BIGINT
+) with (
+   input.type='file',
+   file.path='$dataDir/initial_snapshot/dynamic/Forum_containerOf_Post/*.gz',
+   skip.header='true',
+   column.separator='|'
+);
+
+insert into ldbc_bi_graph(containerOf.srcId, containerOf.tarId)
+select forumId, postId from file_Forum_containerOf_Post;
+
+
+create table file_Comment_hasCreator_Person (
+   creationDate VARCHAR,
+   commentId BIGINT,
+   personId BIGINT
+) with (
+   input.type='file',
+   file.path='$dataDir/initial_snapshot/dynamic/Comment_hasCreator_Person/*.gz',
+   skip.header='true',
+   column.separator='|'
+);
+
+insert into ldbc_bi_graph(hasCreator.srcId, hasCreator.tarId)
+select commentId, personId from file_Comment_hasCreator_Person;
+
+
+create table file_Post_hasCreator_Person (
+   creationDate VARCHAR,
+   postId BIGINT,
+   personId BIGINT
+) with (
+   input.type='file',
+   file.path='$dataDir/initial_snapshot/dynamic/Post_hasCreator_Person/*.gz',
+   skip.header='true',
+   column.separator='|'
+);
+
+insert into ldbc_bi_graph(hasCreator.srcId, hasCreator.tarId)
+select postId, personId from file_Post_hasCreator_Person;
+
+
+create table file_Person_hasInterest_Tag (
+   creationDate VARCHAR,
+   personId BIGINT,
+   tagId BIGINT
+) with (
+   input.type='file',
+   file.path='$dataDir/initial_snapshot/dynamic/Person_hasInterest_Tag/*.gz',
+   skip.header='true',
+   column.separator='|'
+);
+
+insert into ldbc_bi_graph(hasInterest.srcId, hasInterest.tarId)
+select personId, tagId  from file_Person_hasInterest_Tag;
+
+create table file_Forum_hasMember_Person (
+   creationDate VARCHAR,
+   forumId BIGINT,
+   personId BIGINT
+) with (
+   input.type='file',
+   file.path='$dataDir/initial_snapshot/dynamic/Forum_hasMember_Person/*.gz',
+   skip.header='true',
+   column.separator='|'
+);
+
+insert into ldbc_bi_graph(hasMember.srcId, hasMember.tarId, hasMember.creationDate)
+select forumId, personId, UNIX_TIMESTAMP_MILLIS(creationDate, 'yyyy-MM-dd\'T\'HH:mm:ss.SSS\'+00:00\'') from file_Forum_hasMember_Person;
+
+
+create table file_Forum_hasModerator_Person (
+   creationDate VARCHAR,
+   forumId BIGINT,
+   personId BIGINT
+) with (
+   input.type='file',
+   file.path='$dataDir/initial_snapshot/dynamic/Forum_hasModerator_Person/*.gz',
+   skip.header='true',
+   column.separator='|'
+);
+
+insert into ldbc_bi_graph(hasModerator.srcId, hasModerator.tarId)
+select forumId, personId from file_Forum_hasModerator_Person;
+
+
+create table file_Comment_hasTag_Tag (
+   creationDate VARCHAR,
+   commentId BIGINT,
+   tagId BIGINT
+) with (
+   input.type='file',
+   file.path='$dataDir/initial_snapshot/dynamic/Comment_hasTag_Tag/*.gz',
+   skip.header='true',
+   column.separator='|'
+);
+
+insert into ldbc_bi_graph(hasTag.srcId, hasTag.tarId)
+select commentId, tagId from file_Comment_hasTag_Tag;
+
+create table file_Post_hasTag_Tag (
+   creationDate VARCHAR,
+   postId BIGINT,
+   tagId BIGINT
+) with (
+   input.type='file',
+   file.path='$dataDir/initial_snapshot/dynamic/Post_hasTag_Tag/*.gz',
+   skip.header='true',
+   column.separator='|'
+);
+
+insert into ldbc_bi_graph(hasTag.srcId, hasTag.tarId)
+select postId, tagId from file_Post_hasTag_Tag;
+
+create table file_Forum_hasTag_Tag (
+   creationDate VARCHAR,
+   forumId BIGINT,
+   tagId BIGINT
+) with (
+   input.type='file',
+   file.path='$dataDir/initial_snapshot/dynamic/Forum_hasTag_Tag/*.gz',
+   skip.header='true',
+   column.separator='|'
+);
+
+insert into ldbc_bi_graph(hasTag.srcId, hasTag.tarId)
+select forumId, tagId from file_Forum_hasTag_Tag;
+
+
+create table file_Tag_hasType_TagClass (
+   tagId BIGINT,
+   tagClassId BIGINT,
+) with (
+   input.type='file',
+   file.path='$dataDir/initial_snapshot/static/Tag_hasType_TagClass/*.gz',
+   skip.header='true',
+   column.separator='|'
+);
+
+insert into ldbc_bi_graph(hasType.srcId, hasType.tarId)
+select tagId, tagClassId from file_Tag_hasType_TagClass;
+
+
+create table file_Comment_isLocatedIn_Country (
+   creationDate VARCHAR,
+   commentId BIGINT,
+   countryId BIGINT
+) with (
+   input.type='file',
+   file.path='$dataDir/initial_snapshot/dynamic/Comment_isLocatedIn_Country/*.gz',
+   skip.header='true',
+   column.separator='|'
+);
+
+insert into ldbc_bi_graph(isLocatedIn.srcId, isLocatedIn.tarId)
+select commentId, countryId from file_Comment_isLocatedIn_Country;
+
+create table file_Post_isLocatedIn_Country (
+   creationDate VARCHAR,
+   postId BIGINT,
+   countryId BIGINT
+) with (
+   input.type='file',
+   file.path='$dataDir/initial_snapshot/dynamic/Post_isLocatedIn_Country/*.gz',
+   skip.header='true',
+   column.separator='|'
+);
+
+insert into ldbc_bi_graph(isLocatedIn.srcId, isLocatedIn.tarId)
+select postId, countryId from file_Post_isLocatedIn_Country;
+
+create table file_Person_isLocatedIn_City (
+   creationDate VARCHAR,
+   personId BIGINT,
+   cityId BIGINT
+) with (
+   input.type='file',
+   file.path='$dataDir/initial_snapshot/dynamic/Person_isLocatedIn_City/*.gz',
+   skip.header='true',
+   column.separator='|'
+);
+
+insert into ldbc_bi_graph(isLocatedIn.srcId, isLocatedIn.tarId)
+select personId, cityId from file_Person_isLocatedIn_City;
+
+
+create table file_Organisation_isLocatedIn_Place (
+   organisationId BIGINT,
+   placeId BIGINT
+) with (
+   input.type='file',
+   file.path='$dataDir/initial_snapshot/static/Organisation_isLocatedIn_Place/*.gz',
+   skip.header='true',
+   column.separator='|'
+);
+
+insert into ldbc_bi_graph(isLocatedIn.srcId, isLocatedIn.tarId)
+select organisationId, placeId from file_Organisation_isLocatedIn_Place;
+
+
+create table file_Place_isPartOf_Place (
+   place1Id BIGINT,
+   place2Id BIGINT
+) with (
+   input.type='file',
+   file.path='$dataDir/initial_snapshot/static/Place_isPartOf_Place/*.gz',
+   skip.header='true',
+   column.separator='|'
+);
+
+insert into ldbc_bi_graph(isPartOf.srcId, isPartOf.tarId)
+select place1Id, place2Id from file_Place_isPartOf_Place;
+
+create table file_TagClass_isSubclassOf_TagClass (
+   tagClass1Id BIGINT,
+   tagClass2Id BIGINT
+) with (
+   input.type='file',
+   file.path='$dataDir/initial_snapshot/static/TagClass_isSubclassOf_TagClass/*.gz',
+   skip.header='true',
+   column.separator='|'
+);
+
+insert into ldbc_bi_graph(isSubClassOf.srcId, isSubClassOf.tarId)
+select tagClass1Id, tagClass2Id from file_TagClass_isSubclassOf_TagClass;
+
+
+create table file_Person_knows_Person (
+   creationDate VARCHAR,
+   personId1 BIGINT,
+   personId2 BIGINT
+) with (
+   input.type='file',
+   file.path='$dataDir/initial_snapshot/dynamic/Person_knows_Person/*.gz',
+   skip.header='true',
+   column.separator='|'
+);
+
+insert into ldbc_bi_graph(knows.srcId, knows.tarId, knows.creationDate)
+select personId1, personId2, UNIX_TIMESTAMP_MILLIS(creationDate, 'yyyy-MM-dd\'T\'HH:mm:ss.SSS\'+00:00\'') from file_Person_knows_Person;
+
+
+create table file_Person_likes_Comment (
+   creationDate VARCHAR,
+   personId BIGINT,
+   commentId BIGINT
+) with (
+   input.type='file',
+   file.path='$dataDir/initial_snapshot/dynamic/Person_likes_Comment/*.gz',
+   skip.header='true',
+   column.separator='|'
+);
+
+insert into ldbc_bi_graph(likes.srcId, likes.tarId, likes.creationDate)
+select personId, commentId, UNIX_TIMESTAMP_MILLIS(creationDate, 'yyyy-MM-dd\'T\'HH:mm:ss.SSS\'+00:00\'') from file_Person_likes_Comment;
+
+
+create table file_Person_likes_Post (
+   creationDate VARCHAR,
+   personId BIGINT,
+   postId BIGINT
+) with (
+   input.type='file',
+   file.path='$dataDir/initial_snapshot/dynamic/Person_likes_Post/*.gz',
+   skip.header='true',
+   column.separator='|'
+);
+
+insert into ldbc_bi_graph(likes.srcId, likes.tarId, likes.creationDate)
+select personId, postId, UNIX_TIMESTAMP_MILLIS(creationDate, 'yyyy-MM-dd\'T\'HH:mm:ss.SSS\'+00:00\'') from file_Person_likes_Post;
+
+
+create table file_Comment_replyOf_Comment (
+   creationDate VARCHAR,
+   commentId1 BIGINT,
+   commentId2 BIGINT
+) with (
+   input.type='file',
+   file.path='$dataDir/initial_snapshot/dynamic/Comment_replyOf_Comment/*.gz',
+   skip.header='true',
+   column.separator='|'
+);
+
+insert into ldbc_bi_graph(replyOf.srcId, replyOf.tarId)
+select commentId1, commentId2 from file_Comment_replyOf_Comment;
+
+create table file_Comment_replyOf_Post (
+   creationDate VARCHAR,
+   commentId BIGINT,
+   postId BIGINT
+) with (
+   input.type='file',
+   file.path='$dataDir/initial_snapshot/dynamic/Comment_replyOf_Post/*.gz',
+   skip.header='true',
+   column.separator='|'
+);
+
+insert into ldbc_bi_graph(replyOf.srcId, replyOf.tarId)
+select commentId, postId from file_Comment_replyOf_Post;
+
+create table file_Person_studyAt_University (
+   creationDate VARCHAR,
+   personId BIGINT,
+   universityId BIGINT,
+   classYear INTEGER
+) with (
+   input.type='file',
+   file.path='$dataDir/initial_snapshot/dynamic/Person_studyAt_University/*.gz',
+   skip.header='true',
+   column.separator='|'
+);
+
+insert into ldbc_bi_graph(studyAt.srcId, studyAt.tarId, studyAt.classYear)
+select personId, universityId, classYear from file_Person_studyAt_University;
+
+create table file_Person_workAt_Company (
+   creationDate VARCHAR,
+   personId BIGINT,
+   companyId BIGINT,
+   workFrom INTEGER
+) with (
+   input.type='file',
+   file.path='$dataDir/initial_snapshot/dynamic/Person_workAt_Company/*.gz',
+   skip.header='true',
+   column.separator='|'
+);
+
+insert into ldbc_bi_graph(workAt.srcId, workAt.tarId, workAt.workFrom)
+select personId, companyId, workFrom from file_Person_workAt_Company;
