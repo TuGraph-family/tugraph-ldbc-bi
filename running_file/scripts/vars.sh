@@ -18,7 +18,7 @@ export OSS_DIR=/sf${SF}/graphs/csv/bi/composite-projected-fk/
 # k8s cluster name.
 export CLUSTER_NAME=geaflow-ldbc
 # jvm heap size for each worker process.
-export WORKER_JVM_GB=74
+export WORKER_JVM_GB=72
 
 
 if [ -e "driver.ip" ];then
